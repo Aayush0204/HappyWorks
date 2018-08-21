@@ -10,13 +10,30 @@
 # "storageBucket": "happyworks-9db2e.appspot.com",
 # "messagingSenderId": "90914705848"
 # }
-
-
-
 from firebase import firebase
-#from flask import Flask
+from flask import Flask,request,Response
+import json
+
 url="https://happyworks-9db2e.firebaseio.com"
-firebase=firebase.FirebaseApplication(url,None)
+
+application = Flask(__name__)
+
+firebase=firebase.FirebaseApplication(url,None) #connect to firebase database
 #result=firebase.get('/Questions',None)
-resultQue= firebase.post('/Questions',{'A':'Ans1','B':'ans2','C':'ans3','Question':'What is my name'})
-print(resultQue)
+@application.route("/create_questions",methods=['POST'])
+def create_questions():
+
+    incomming_data=request.data
+    
+    resultQue= firebase.post('/Questions',{'A':'Ans1','B':'ans2','C':'ans3','Question':'What is my name'})
+    print(resultQue)
+
+    response_body = 'Question created in FIREBASE'
+    return Response(
+            response_body,
+            status=200
+        )
+
+if __name__ == '__main__':
+    logging.info('Application is started...')
+    application.run()
